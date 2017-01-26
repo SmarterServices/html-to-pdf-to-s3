@@ -1,6 +1,6 @@
 {
   "name": "@smarterservices/html-to-pdf-to-s3",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Module that takes a URL and using pdfcrowd pipes the resulting pdf into an s3 bucket",
   "main": "index.js",
   "scripts": {
