@@ -2,11 +2,11 @@ var AWS = require("aws-sdk");
 var pdf = require("pdfcrowd");
 var s3Stream = require("s3-upload-stream");
 /**
- * pdfPipe Constructor function that sets up a new pdfPipe 
+ * pdfPipe Constructor function that sets up a new pdfPipe
  * @param  {[type]} c config object that is required to contain pdfCrowd,can also contain aws stuff
  * @return {object} pdfPipe
  */
-var pdfPipe = function(c) {
+var pdfClient = function(c) {
   var config = { region: c.region || "us-east-1" };
   //if aws keys passed in set from the confg
   if (c.accessKey && c.secretKey) {
@@ -32,7 +32,7 @@ var pdfPipe = function(c) {
     );
   }
   //initalize both clients that are attached to this pdfPipe instance
-  this.client = new pdf.Pdfcrowd(c.pdfCrowd.userName, c.pdfCrowd.apiKey);
+  this.client = new pdf.Pdfcrowd(c.pdfCrowd.userName, c.pdfCrowd.apiKey, c.pdfCrowd.hostName || null);
   this.s3 = require("s3-upload-stream")(new AWS.S3(config));
 };
 
@@ -54,14 +54,14 @@ function out_stream(wStream, callback) {
     },
     //called at the end of the stream
     end: function() {
-      callback(null, { ended: true });
+      callback(null, true);
     }
   };
 }
 /**
  * getFunction for code reduction purp, this function is used to return the base function with a small change based on the type
  * @param  {String} type url or html
- * @return {function} function(url,bucket,name,options) 
+ * @return {function} function(url,bucket,name,options)
  */
 function getFunction(type) {
   return function(url, bucket, name, options) {
@@ -73,7 +73,6 @@ function getFunction(type) {
       //else create the writeable stream to s3
       var upload = this.s3.upload({ Bucket: bucket, Key: name });
       //run the pdfCrowd convertURI function and pass out_stream callback with our writable stream and another callback inside it
-      console.log(type);
       //if options run this block
       if (options) {
         //run convertURI or convertHtml based on the type passed into get function
@@ -106,11 +105,11 @@ function getFunction(type) {
  * @param  {String} name   name of the output file
  * @return {Promise} resolve or reject
  */
-pdfPipe.prototype.convertUrl = function(url, bucket, name, options) {
+pdfClient.prototype.convertUrl = function(url, bucket, name, options) {
   return getFunction("url").bind(this)(url, bucket, name, options);
 };
-pdfPipe.prototype.convertHtml = function(html, bucket, name, options) {
+pdfClient.prototype.convertHtml = function(html, bucket, name, options) {
   return getFunction("html").bind(this)(html, bucket, name, options);
 };
 
-module.exports = pdfPipe;
+module.exports = pdfClient;

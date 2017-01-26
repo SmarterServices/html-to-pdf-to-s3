@@ -12,7 +12,7 @@
     "pdfcrowd",
     "stream"
   ],
-  "author": "jordan l piepkow",
+  "author": "Jordan Piepkow",
   "repository": {
     "type": "git",
     "url": "https://github.com/SmarterServices/html-to-pdf-to-s3"
