@@ -1,7 +1,7 @@
 var pdfClient = require("./index");
-var pdf = new pdfClient({ pdfCrowd: { userName: "username", apiKey: "key" } });
+var pdf = new pdfClient({ pdfCrowd: { userName: "", apiKey: "" } });
 pdf
-  .convertUrl("http://google.com", "pdfs-bucket", "url.pdf")
+  .convertUrl("http://google.com", {"bucket": "pdfs", "key": "url.pdf", "expires": 500})
   .then(res => {
     console.log(res);
   })
@@ -10,7 +10,7 @@ pdf
   });
 
   pdf
-    .convertHtml('<strong>Hi</strong>',"pdfs-bucket", "string.pdf")
+    .convertHtml('<strong>Hi</strong>',{"bucket": "pdfs", "key": "url.pdf"})
     .then(res => {
       console.log(res);
     })

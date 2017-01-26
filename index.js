@@ -33,7 +33,8 @@ var pdfClient = function(c) {
   }
   //initalize both clients that are attached to this pdfPipe instance
   this.client = new pdf.Pdfcrowd(c.pdfCrowd.userName, c.pdfCrowd.apiKey, c.pdfCrowd.hostName || null);
-  this.s3 = require("s3-upload-stream")(new AWS.S3(config));
+  this.s3  = new AWS.S3(config);
+  this.s3Stream = require("s3-upload-stream")(this.s3);
 };
 
 /**
@@ -54,6 +55,7 @@ function out_stream(wStream, callback) {
     },
     //called at the end of the stream
     end: function() {
+      // now just get the signed url to return...
       callback(null, true);
     }
   };
@@ -64,37 +66,44 @@ function out_stream(wStream, callback) {
  * @return {function} function(url,bucket,name,options)
  */
 function getFunction(type) {
-  return function(url, bucket, name, options) {
+  return function(url, s3Options, PdfOptions) {
     return new Promise((resolve, reject) => {
       //if name does not end in .pdf reject
-      if (!name.includes(".pdf")) {
+      if (!s3Options.key.includes(".pdf")) {
         return reject({ err: "Name passed in must end in .pdf" });
       }
       //else create the writeable stream to s3
-      var upload = this.s3.upload({ Bucket: bucket, Key: name });
+      var upload = this.s3Stream.upload({ Bucket: s3Options.bucket, Key: s3Options.key });
       //run the pdfCrowd convertURI function and pass out_stream callback with our writable stream and another callback inside it
       //if options run this block
-      if (options) {
-        //run convertURI or convertHtml based on the type passed into get function
-        this.client[type === "url" ? "convertURI" : "convertHtml"](
-          url,
-          out_stream(
-            upload,
-            (err, res) => {
-              return err ? reject(err) : resolve(res);
-            },
-            options
-          )
-        );
-      } else {
-        //run convertURI or convertHtml based on the type passed into get function
-        this.client[type === "url" ? "convertURI" : "convertHtml"](
-          url,
-          out_stream(upload, (err, res) => {
-            return err ? reject(err) : resolve(res);
-          })
-        );
+      if (!PdfOptions) {
+        PdfOptions = {};
       }
+      //run convertURI or convertHtml based on the type passed into get function
+      this.client[type === "url" ? "convertURI" : "convertHtml"](
+        url,
+        out_stream(
+          upload,
+          (err, res) => {
+            if(res){
+              if(s3Options.expires){
+                var urlParams = {
+                  Bucket: s3Options.bucket,
+                  Key: s3Options.key,
+                  Expires: s3Options.expires
+                };
+                var url = this.s3.getSignedUrl('getObject', urlParams);
+                return resolve(url)
+              }else{
+                return resolve(null)
+              }
+            }else{
+              return reject(err)
+            }
+          },
+          PdfOptions
+        )
+      );
     });
   };
 }
