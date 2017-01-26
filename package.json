@@ -1,5 +1,5 @@
 {
-  "name": "html-to-pdf-to-s3",
+  "name": "@smarterservices/html-to-pdf-to-s3",
   "version": "1.0.0",
   "description": "Module that takes a URL and using pdfcrowd pipes the resulting pdf into an s3 bucket",
   "main": "index.js",
@@ -15,7 +15,7 @@
   "author": "jordan l piepkow",
   "repository" :
   { "type" : "git"
-  , "url" : "https://github.com/SmarterServices/pdf-pipe"
+  , "url" : "https://github.com/SmarterServices/html-to-pdf-to-s3"
   },
   "license": "MIT",
   "dependencies": {
