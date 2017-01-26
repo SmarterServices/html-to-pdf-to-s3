@@ -1,7 +1,7 @@
 {
-  "name": "pdf-pipe",
+  "name": "html-to-pdf-to-s3",
   "version": "1.0.0",
-  "description": "module that takes a url and using pdfcrowd pipes the resulting pdf into an s3 bucket",
+  "description": "Module that takes a URL and using pdfcrowd pipes the resulting pdf into an s3 bucket",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,9 +15,9 @@
   "author": "jordan l piepkow",
   "repository" :
   { "type" : "git"
-  , "url" : "https://github.com/npm/npm.git"
+  , "url" : "https://github.com/SmarterServices/pdf-pipe"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.8.0",
     "pdfcrowd": "^1.1.1",
