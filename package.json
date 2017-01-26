@@ -1,0 +1,26 @@
+{
+  "name": "pdf-pipe",
+  "version": "1.0.0",
+  "description": "module that takes a url and using pdfcrowd pipes the resulting pdf into an s3 bucket",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pdf",
+    "pipe",
+    "pdfcrowd",
+    "stream"
+  ],
+  "author": "jordan l piepkow",
+  "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/npm/npm.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.8.0",
+    "pdfcrowd": "^1.1.1",
+    "s3-upload-stream": "^1.0.7"
+  }
+}
