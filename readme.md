@@ -1,4 +1,4 @@
-pdf-pipe
+html-to-pdf-to-s3
 =======
 Install & start
 	
@@ -6,9 +6,9 @@ Install & start
 	
 	
 	
-	let pdfPipe = require('pdfPipe')
+	let pdfPipe = require('html-to-pdf-to-s3')
 	let pdf = new pdfPipe(config //explained below)
-	pdf.pipeUrl(url,bucket,name)
+	pdf.pipeUrl(url,bucket,name,options)
 		.then(console.log)
 		.catch(console.log)
 	
@@ -33,11 +33,12 @@ config for constructor:
 
 method:
 
-	pipeUrl(url,bucket,name) //Promise
+	convertUrl(url,bucket,name) //Promise
 		args:
 			url: url that will be converted to pdf
 			bucket: name of bucket to insert item
 			name: name of output item(must end in .pdf)
+			options: options object for pdfCrowd //check their readme it is optional
 			
 		return:
 				resolve or reject of promise
@@ -46,4 +47,22 @@ method:
 		
 			pdf.pipeUrl('http://google.com','testBucket','google.pdf')
 				.then(console.log)
-				.catch(console.log)				
+				.catch(console.log)	
+				
+				
+====				
+		convertHtml(html,bucket,name) //Promise
+		args:
+			html: raw html that will be converted
+			bucket: name of bucket to insert item
+			name: name of output item(must end in .pdf)
+			options: options object for pdfCrowd //check their readme it is optional
+			
+		return:
+				resolve or reject of promise
+				
+		example:
+		
+			pdf.pipeUrl('http://google.com','testBucket','google.pdf')
+				.then(console.log)
+				.catch(console.log)					
